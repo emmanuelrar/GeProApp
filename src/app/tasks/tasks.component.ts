@@ -1,6 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import lowdb from 'lowdb';
+import { default as FileAsync } from 'lowdb/adapters/FileAsync';
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -31,6 +33,7 @@ export class TasksComponent implements OnInit {
   constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
+
   }
 
   AddNewTask() {
@@ -42,7 +45,6 @@ export class TasksComponent implements OnInit {
       }
     });
   }
-
 }
 
 
