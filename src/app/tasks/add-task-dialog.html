@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Nueva Tarea</h1>
+<div mat-dialog-content>
+    <form class="example-form">
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Tarea">
+        </mat-form-field>
+
+        <mat-form-field class="example-full-width">
+            <textarea matInput placeholder="Detalle de la tarea" rows="10"></textarea>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <input matInput [matDatepicker]="picker" placeholder="Fecha de Vencimiento">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <button mat-raised-button color="primary">Crear tarea</button>
+    </form>
+</div>

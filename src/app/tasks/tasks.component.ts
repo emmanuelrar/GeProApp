@@ -1,5 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+export interface DialogData {
+  animal: 'panda' | 'unicorn' | 'lion';
+}
 
 @Component({
   selector: 'app-tasks',
@@ -23,13 +28,29 @@ export class TasksComponent implements OnInit {
     moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
   }
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
   }
 
-  SayHi(){
-    console.log("Hola Mundo!");
+  AddNewTask() {
+    this.dialog.open(AddTaskDialog, {
+      width: '500px',
+      height: '80vh',
+      data: {
+        animal: 'panda'
+      }
+    });
   }
 
+}
+
+
+@Component({
+  selector: 'add-task-dialog-dialog',
+  templateUrl: 'add-task-dialog.html',
+  styleUrls: ['./tasks.component.sass']
+})
+export class AddTaskDialog {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 }
