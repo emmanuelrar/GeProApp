@@ -11,6 +11,9 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatListModule} from '@angular/material/list';
 import {MatCardModule} from '@angular/material/card';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatIconModule} from '@angular/material/icon';
+
 
 @NgModule({
   declarations: [
@@ -26,7 +29,9 @@ import {MatToolbarModule} from '@angular/material/toolbar';
     DragDropModule,
     MatListModule,
     MatCardModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatGridListModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

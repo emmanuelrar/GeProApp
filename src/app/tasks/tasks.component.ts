@@ -7,7 +7,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
   styleUrls: ['./tasks.component.sass']
 })
 export class TasksComponent implements OnInit {
-
+  date = new Date();
   movies = [
     'Episode I - The Phantom Menace',
     'Episode II - Attack of the Clones',
@@ -26,6 +26,10 @@ export class TasksComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  }
+
+  SayHi(){
+    console.log("Hola Mundo!");
   }
 
 }
