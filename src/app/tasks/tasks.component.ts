@@ -14,6 +14,7 @@ export class TasksComponent implements OnInit {
   date = new Date();
   private db;
   tasks = [];
+  disableDrag = false;
   selectedTask = [];
 
   drop(event: CdkDragDrop<string[]>) {
@@ -49,6 +50,10 @@ export class TasksComponent implements OnInit {
           }
         });
     });
+  }
+
+  Drag() {
+    this.disableDrag = !this.disableDrag;
   }
 
   AddNewTask() {

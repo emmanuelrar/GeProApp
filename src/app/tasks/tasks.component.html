@@ -22,16 +22,16 @@
             </mat-menu>
         </mat-grid-tile>
         <mat-grid-tile>
-            <button mat-fab matTooltip="Ordenar Libremente">
+            <button mat-fab (click)="Drag()" [ngClass]="{'switch-on': disableDrag}" matTooltip="Ordenar Libremente">
                 <mat-icon color="primary">reorder</mat-icon>
             </button>
         </mat-grid-tile>
     </mat-grid-list>
 
     <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-        <mat-card *ngFor="let task of tasks" class="example-card" [ngClass]="{'liberada': task.status === 'liberada', 'pendiente': task.duedate >= date}" cdkDrag>
+        <mat-card *ngFor="let task of tasks" class="example-card" [cdkDragDisabled]="!disableDrag" cdkDrag [ngClass]="{'liberada': task.status === 'liberada', 'pendiente': task.duedate >= date}">
             <mat-card-header>
-                <div mat-card-avatar class="">
+                <div mat-card-avatar>
                     <mat-icon *ngIf="task.duedate >= date && task.status != 'liberada'" matTooltip="Pendiente" class="task-status">alarm</mat-icon>
                     <mat-icon *ngIf="task.duedate < date && task.status != 'liberada'" matTooltip="Atrasada" class="task-status">warning</mat-icon>
                     <mat-icon *ngIf="task.status == 'liberada'" class="task-status">check</mat-icon>
