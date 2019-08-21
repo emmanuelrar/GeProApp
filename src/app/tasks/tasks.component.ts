@@ -1,7 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormControl } from '@angular/forms';
+import { HttpService } from '../services/http.service';
+import Swal from 'sweetalert2'
 
 export interface DialogData {
   animal: 'panda' | 'unicorn' | 'lion';
@@ -15,32 +17,66 @@ export interface DialogData {
 export class TasksComponent implements OnInit {
   date = new Date();
   private db;
-  movies = [
-    'Episode I - The Phantom Menace',
-    'Episode II - Attack of the Clones',
-    'Episode III - Revenge of the Sith',
-    'Episode IV - A New Hope',
-    'Episode V - The Empire Strikes Back',
-    'Episode VI - Return of the Jedi',
-    'Episode VII - The Force Awakens',
-    'Episode VIII - The Last Jedi'
-  ];
+  tasks = [];
 
   drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.tasks, event.previousIndex, event.currentIndex);
   }
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog, private httpClient: HttpService) { }
 
   ngOnInit() {
+    this.GetTasks();
   }
 
 
   AddNewTask() {
-    this.dialog.open(AddTaskDialog, {
+    let dialogOpened = this.dialog.open(AddTaskDialog, {
       width: '500px',
-      height: '80vh'
+      height: '80vh',
+      data: {
+        httpClient: this.httpClient
+      }
     });
+
+    dialogOpened.afterClosed().subscribe(res => {
+      this.GetTasks();
+    })
+  }
+
+  GetTasks() {
+    this.httpClient.GetTasks()
+      .then(data => {
+        this.tasks = data;
+        this.tasks.forEach(element => {
+          element.duedate = new Date(element.duedate);
+          element.createddate = new Date(element.createddate);
+        });
+      })
+  }
+
+  Ordenar(sort: any) {
+    switch(sort) {
+      case 'FechaVencimiento':
+          this.tasks.sort(function (a, b) {
+            var keyA = new Date(Date.parse(a.duedate)),
+              keyB = new Date(Date.parse(b.duedate));
+            // Compare the 2 dates
+            if (keyA < keyB) return -1;
+            if (keyA > keyB) return 1;
+            return 0;
+          });
+          break;
+      case 'FechaCreacion':
+          this.tasks.sort(function (a, b) {
+            var keyA = new Date(Date.parse(a.createddate)),
+              keyB = new Date(Date.parse(b.createddate));
+            // Compare the 2 dates
+            if (keyA < keyB) return 1;
+            if (keyA > keyB) return -1;
+            return 0;
+          });
+    }
   }
 
 }
@@ -55,12 +91,30 @@ export class AddTaskDialog {
 
   newTaskForm = new FormGroup({
     task: new FormControl(''),
-    detalle: new FormControl(''),
-    vencimiento: new FormControl(''),
+    detail: new FormControl(''),
+    duedate: new FormControl(''),
   });
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) { }
+  constructor(public dialogRef: MatDialogRef<AddTaskDialog>, @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   CreateTask() {
+    var body: any = {
+      name: this.newTaskForm.get('task').value,
+      detail: this.newTaskForm.get('detail').value,
+      duedate: this.newTaskForm.get('duedate').value,
+      createddate: new Date()
+    };
+
+    this.data.httpClient.CreateTask(body)
+      .then(data => {
+        Swal.fire(
+          'Tarea creada',
+          'Click en aceptar para continuar.',
+          'success'
+        ).then(res => {
+          this.dialogRef.close();
+        })
+      });
   }
+
 }

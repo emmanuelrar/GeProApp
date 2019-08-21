@@ -5,10 +5,10 @@
             <input matInput formControlName="task" placeholder="Tarea">
         </mat-form-field>
         <mat-form-field class="example-full-width">
-            <textarea matInput formControlName="detalle" placeholder="Detalle de la tarea" rows="10"></textarea>
+            <textarea matInput formControlName="detail" placeholder="Detalle de la tarea" rows="10"></textarea>
         </mat-form-field>
         <mat-form-field class="example-full-width">
-            <input matInput formControlName="vencimiento" [matDatepicker]="picker" placeholder="Fecha de Vencimiento">
+            <input matInput formControlName="duedate" [matDatepicker]="picker" placeholder="Fecha de Vencimiento">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>

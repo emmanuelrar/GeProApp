@@ -16,9 +16,9 @@
                 <mat-icon color="primary">sort</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-                <button mat-menu-item>Fecha Creacion</button>
-                <button mat-menu-item>Fecha Vencimiento</button>
-                <button mat-menu-item>Estado</button>
+                <button mat-menu-item (click)="Ordenar('FechaCreacion')">Fecha Creacion</button>
+                <button mat-menu-item (click)="Ordenar('FechaVencimiento')">Fecha Vencimiento</button>
+                <button mat-menu-item (click)="Ordenar('Estado')">Estado</button>
             </mat-menu>
         </mat-grid-tile>
         <mat-grid-tile>
@@ -29,21 +29,22 @@
     </mat-grid-list>
 
     <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-        <mat-card class="example-card" *ngFor="let movie of movies" cdkDrag>
+        <mat-card *ngFor="let task of tasks" class="example-card" [ngClass]="{'liberada': task.status === 'liberada', 'pendiente': task.duedate >= date}" cdkDrag>
             <mat-card-header>
-                <div mat-card-avatar class="example-header-image"></div>
-                <mat-card-title>{{movie}}</mat-card-title>
-                <mat-card-subtitle>3 days left</mat-card-subtitle>
+                <div mat-card-avatar class="">
+                    <mat-icon *ngIf="task.duedate >= date && task.status != 'liberada'" matTooltip="Pendiente" class="task-status">alarm</mat-icon>
+                    <mat-icon *ngIf="task.duedate < date && task.status != 'liberada'" matTooltip="Atrasada" class="task-status">warning</mat-icon>
+                    <mat-icon *ngIf="task.status == 'liberada'" class="task-status">check</mat-icon>
+                </div>
+                <mat-card-title>{{task.name}}</mat-card-title>
+                <mat-card-subtitle>{{task.duedate | date}}</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
                 <p>
-                    The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-                    A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-                    bred for hunting.
+                    {{task.detail}}
                 </p>
             </mat-card-content>
             <mat-card-actions>
-                <mat-icon class="task-status">check</mat-icon>
                 <mat-checkbox color="primary"></mat-checkbox>
             </mat-card-actions>
         </mat-card>
