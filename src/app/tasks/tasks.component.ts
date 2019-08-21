@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpService } from '../services/http.service';
 import Swal from 'sweetalert2'
 
@@ -28,19 +28,19 @@ export class TasksComponent implements OnInit {
   }
 
   Check(task: any) {
-    if(this.selectedTask.find(anytask => anytask.id == task.id) == undefined) {
+    if (this.selectedTask.find(anytask => anytask.id == task.id) == undefined) {
       this.selectedTask.push(task);
     } else {
       this.selectedTask.splice(this.selectedTask.findIndex(anytask => anytask.id == task.id), 1);
     }
   }
-  
+
   LiberarTareas() {
     this.selectedTask.forEach((task, index) => {
       task.status = 'liberada';
       this.httpClient.UpdateTask(task)
         .then(res => {
-          if(index == this.selectedTask.length - 1) {
+          if (index == this.selectedTask.length - 1) {
             Swal.fire(
               'Tareas liberadas',
               'Continue para visualizar sus tareas restantes.',
@@ -82,7 +82,7 @@ export class TasksComponent implements OnInit {
   }
 
   Ordenar(sort: any) {
-    switch(sort) {
+    switch (sort) {
       case 'FechaVencimiento':
         this.tasks.sort(function (a, b) {
           var keyA = new Date(Date.parse(a.duedate)),
@@ -102,14 +102,24 @@ export class TasksComponent implements OnInit {
         });
         break;
       case "Estado":
-          let liberadastasks = [];
-          this.tasks.sort(function (a, b) {
-            var keyA = new Date(Date.parse(a.duedate)),
-              keyB = new Date(Date.parse(b.duedate));
-            if (keyA < keyB) return -1;
-            if (keyA > keyB) return 1;
-            return 0;
-          });
+        let liberadastasks = [];
+        this.tasks.sort(function (a, b) {
+          var keyA = new Date(Date.parse(a.duedate)),
+            keyB = new Date(Date.parse(b.duedate));
+          if (keyA < keyB) return -1;
+          if (keyA > keyB) return 1;
+          return 0;
+        });
+        let newordertask = [...this.tasks];
+        this.tasks.forEach(task => {
+          if (task.status == 'liberada') {
+            newordertask.splice(newordertask.indexOf(task), 1);
+            liberadastasks.push(task);
+          }
+        });
+
+        newordertask = newordertask.concat(liberadastasks);
+        this.tasks = newordertask;
         break;
     }
   }
@@ -124,32 +134,48 @@ export class TasksComponent implements OnInit {
 })
 export class AddTaskDialog {
 
+  constructor(public dialogRef: MatDialogRef<AddTaskDialog>, @Inject(MAT_DIALOG_DATA) public data: any) { }
+
   newTaskForm = new FormGroup({
     task: new FormControl(''),
     detail: new FormControl(''),
     duedate: new FormControl(''),
   });
 
-  constructor(public dialogRef: MatDialogRef<AddTaskDialog>, @Inject(MAT_DIALOG_DATA) public data: any) { }
+  Validate() {
+    if (this.newTaskForm.get('task').value == '' || this.newTaskForm.get('detail').value == '' || this.newTaskForm.get('duedate').value == '') {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   CreateTask() {
-    var body: any = {
-      name: this.newTaskForm.get('task').value,
-      detail: this.newTaskForm.get('detail').value,
-      duedate: this.newTaskForm.get('duedate').value,
-      createddate: new Date()
-    };
+    if (this.Validate()) {
+      var body: any = {
+        name: this.newTaskForm.get('task').value,
+        detail: this.newTaskForm.get('detail').value,
+        duedate: this.newTaskForm.get('duedate').value,
+        createddate: new Date()
+      };
 
-    this.data.httpClient.CreateTask(body)
-      .then(data => {
-        Swal.fire(
-          'Tarea creada',
-          'Click en aceptar para continuar.',
-          'success'
-        ).then(res => {
-          this.dialogRef.close();
-        })
-      });
+      this.data.httpClient.CreateTask(body)
+        .then(data => {
+          Swal.fire(
+            'Tarea creada',
+            'Click en aceptar para continuar.',
+            'success'
+          ).then(res => {
+            this.dialogRef.close();
+          })
+        });
+    } else {
+      Swal.fire(
+        'Debe llenar los campos obligatorios',
+        'Todos los campos son necesarios para generar la tarea.',
+        'warning'
+      );
+    }
   }
 
 }
