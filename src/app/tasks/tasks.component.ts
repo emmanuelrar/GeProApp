@@ -5,10 +5,6 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { HttpService } from '../services/http.service';
 import Swal from 'sweetalert2'
 
-export interface DialogData {
-  animal: 'panda' | 'unicorn' | 'lion';
-}
-
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
@@ -18,6 +14,7 @@ export class TasksComponent implements OnInit {
   date = new Date();
   private db;
   tasks = [];
+  selectedTask = [];
 
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.tasks, event.previousIndex, event.currentIndex);
@@ -29,6 +26,30 @@ export class TasksComponent implements OnInit {
     this.GetTasks();
   }
 
+  Check(task: any) {
+    if(this.selectedTask.find(anytask => anytask.id == task.id) == undefined) {
+      this.selectedTask.push(task);
+    } else {
+      this.selectedTask.splice(this.selectedTask.findIndex(anytask => anytask.id == task.id), 1);
+    }
+  }
+  
+  LiberarTareas() {
+    this.selectedTask.forEach((task, index) => {
+      task.status = 'liberada';
+      this.httpClient.UpdateTask(task)
+        .then(res => {
+          if(index == this.selectedTask.length - 1) {
+            Swal.fire(
+              'Tareas liberadas',
+              'Continue para visualizar sus tareas restantes.',
+              'success'
+            );
+            this.selectedTask = [];
+          }
+        });
+    });
+  }
 
   AddNewTask() {
     let dialogOpened = this.dialog.open(AddTaskDialog, {
@@ -58,24 +79,33 @@ export class TasksComponent implements OnInit {
   Ordenar(sort: any) {
     switch(sort) {
       case 'FechaVencimiento':
+        this.tasks.sort(function (a, b) {
+          var keyA = new Date(Date.parse(a.duedate)),
+            keyB = new Date(Date.parse(b.duedate));
+          if (keyA < keyB) return -1;
+          if (keyA > keyB) return 1;
+          return 0;
+        });
+        break;
+      case 'FechaCreacion':
+        this.tasks.sort(function (a, b) {
+          var keyA = new Date(Date.parse(a.createddate)),
+            keyB = new Date(Date.parse(b.createddate));
+          if (keyA < keyB) return 1;
+          if (keyA > keyB) return -1;
+          return 0;
+        });
+        break;
+      case "Estado":
+          let liberadastasks = [];
           this.tasks.sort(function (a, b) {
             var keyA = new Date(Date.parse(a.duedate)),
               keyB = new Date(Date.parse(b.duedate));
-            // Compare the 2 dates
             if (keyA < keyB) return -1;
             if (keyA > keyB) return 1;
             return 0;
           });
-          break;
-      case 'FechaCreacion':
-          this.tasks.sort(function (a, b) {
-            var keyA = new Date(Date.parse(a.createddate)),
-              keyB = new Date(Date.parse(b.createddate));
-            // Compare the 2 dates
-            if (keyA < keyB) return 1;
-            if (keyA > keyB) return -1;
-            return 0;
-          });
+        break;
     }
   }
 

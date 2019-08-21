@@ -25,3 +25,9 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+
+## Metodo de ejecucion
+
+Para ejecutar la aplicacion se debe clonar el repositorio, posteriormente abrir una consola de comandos en la ruta del repositorio y ejecutar el comando `ng serve --open`.  Debe tener instalado Node.js y el Angular CLI para poder ejecutar dicho comando. Posteriormente debe abrir otra consola de comando en la misma ruta del repositorio y ejecutar el comando `json-server --watch db.json`.
+

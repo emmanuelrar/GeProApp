@@ -18,6 +18,6 @@ export class HttpService {
   }
 
   async UpdateTask(task: any) {
-    return await this.httpClient.put<any>(`${this.WebApi_URL}posts`, task).toPromise();
+    return await this.httpClient.put<any>(`${this.WebApi_URL}posts/${task.id}`, task).toPromise();
   }
 }

@@ -5,7 +5,8 @@
       "detail": "Debo llevar a Julio al parque.",
       "duedate": "2019-08-20T04:00:00.000Z",
       "createddate": "2019-08-21T00:00:23.433Z",
-      "id": 1
+      "id": 1,
+      "status": "liberada"
     },
     {
       "name": "Comprar manzanas",
@@ -26,7 +27,15 @@
       "detail": "Comprar un Ford",
       "duedate": "2019-08-19T04:00:00.000Z",
       "createddate": "2019-08-21T00:12:50.368Z",
-      "id": 4
+      "id": 4,
+      "status": "liberada"
+    },
+    {
+      "name": "Comprar vienesas",
+      "detail": "Comprar vienesas en oferta.",
+      "duedate": "2019-08-24T04:00:00.000Z",
+      "createddate": "2019-08-21T01:12:45.993Z",
+      "id": 5
     }
   ],
   "comments": [

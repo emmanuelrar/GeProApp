@@ -9,7 +9,7 @@
 <div class="card-container">
     <mat-grid-list cols="4" rowHeight="1:1">
         <mat-grid-tile [colspan]="2">
-            <button mat-raised-button color="primary">Liberar Seleccionadas</button>
+            <button mat-raised-button color="primary" (click)="LiberarTareas()">Liberar Seleccionadas</button>
         </mat-grid-tile>
         <mat-grid-tile>
             <button mat-fab [matMenuTriggerFor]="menu" matTooltip="Ordenar">
@@ -45,7 +45,7 @@
                 </p>
             </mat-card-content>
             <mat-card-actions>
-                <mat-checkbox color="primary"></mat-checkbox>
+                <mat-checkbox *ngIf="task.status != 'liberada'" color="primary" (click)="Check(task)"></mat-checkbox>
             </mat-card-actions>
         </mat-card>
     </div>
